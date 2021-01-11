@@ -1,26 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { FunctionComponent } from "react";
+import { Redirect, Router } from "@reach/router";
+import "nes.css/css/nes.min.css";
 
-function App() {
+import "./App.scss";
+import { stores, StoresProvider } from "./stores/stores";
+import { RoomPage } from "./pages/RoomPage/RoomPage";
+
+const App: FunctionComponent = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <StoresProvider value={stores}>
+      <Router>
+        <Redirect from="/" to="/hq" />
+        <RoomPage path="/:roomName?"></RoomPage>
+      </Router>
+    </StoresProvider>
   );
-}
+};
 
 export default App;
