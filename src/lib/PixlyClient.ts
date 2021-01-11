@@ -1,15 +1,15 @@
 import { io, Socket } from "socket.io-client";
-import { PixlyProtocol } from "../../core/protocol";
-import { IAuthenticatedEventData } from "../../core/interfaces/event-data/IAuthenticatedEventData";
-import { IJoinedRoomEventData } from "../../core/interfaces/event-data/IJoinedRoomEventData";
-import { INewMessageEventData } from "../../core/interfaces/event-data/INewMessageEventData";
-import { IRoomUpdateEventData } from "../../core/interfaces/event-data/IRoomUpdateEventData";
-import { IUserStatusUpdateEventData } from "../../core/interfaces/event-data/UserUpdateEventData";
-import { IUserLeftRoomEventData } from "../../core/interfaces/event-data/IUserLeftRoomEventData";
-import { AuthenticateActionDto } from "../../core/dtos/AuthenticateActionDto";
-import { JoinRoomActionDto } from "../../core/dtos/JoinRoomActionDto";
-import { SendMessageActionDto } from "../../core/dtos/SendMessageActionDto";
-import { UpdateStatusActionDto } from "../../core/dtos/UpdateStatusActionDto";
+import { PixlyProtocol } from "../core/protocol";
+import { IAuthenticatedEventData } from "../core/interfaces/event-data/IAuthenticatedEventData";
+import { IJoinedRoomEventData } from "../core/interfaces/event-data/IJoinedRoomEventData";
+import { INewMessageEventData } from "../core/interfaces/event-data/INewMessageEventData";
+import { IRoomUpdateEventData } from "../core/interfaces/event-data/IRoomUpdateEventData";
+import { IUserStatusUpdateEventData } from "../core/interfaces/event-data/UserUpdateEventData";
+import { IUserLeftRoomEventData } from "../core/interfaces/event-data/IUserLeftRoomEventData";
+import { AuthenticateActionDto } from "../core/dtos/AuthenticateActionDto";
+import { JoinRoomActionDto } from "../core/dtos/JoinRoomActionDto";
+import { SendMessageActionDto } from "../core/dtos/SendMessageActionDto";
+import { UpdateStatusActionDto } from "../core/dtos/UpdateStatusActionDto";
 import { plainToClass } from "class-transformer";
 import { validateSync, ValidationError } from "class-validator";
 

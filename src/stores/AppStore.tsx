@@ -1,11 +1,10 @@
-import { action, observable } from "mobx";
 import { Socket } from "socket.io-client";
-import { IAuthenticatedEventData } from "../../core/interfaces/event-data/IAuthenticatedEventData";
-import { IJoinedRoomEventData } from "../../core/interfaces/event-data/IJoinedRoomEventData";
-import { INewMessageEventData } from "../../core/interfaces/event-data/INewMessageEventData";
-import { IRoomUpdateEventData } from "../../core/interfaces/event-data/IRoomUpdateEventData";
-import { IUserStatusUpdateEventData } from "../../core/interfaces/event-data/UserUpdateEventData";
-import { IUserLeftRoomEventData } from "../../core/interfaces/event-data/IUserLeftRoomEventData";
+import { IAuthenticatedEventData } from "../core/interfaces/event-data/IAuthenticatedEventData";
+import { IJoinedRoomEventData } from "../core/interfaces/event-data/IJoinedRoomEventData";
+import { INewMessageEventData } from "../core/interfaces/event-data/INewMessageEventData";
+import { IRoomUpdateEventData } from "../core/interfaces/event-data/IRoomUpdateEventData";
+import { IUserStatusUpdateEventData } from "../core/interfaces/event-data/UserUpdateEventData";
+import { IUserLeftRoomEventData } from "../core/interfaces/event-data/IUserLeftRoomEventData";
 import { PixlyClient } from "../lib/PixlyClient";
 
 export class AppStore {
