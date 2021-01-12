@@ -10,8 +10,7 @@ const App: FunctionComponent = () => {
   return (
     <StoresProvider value={stores}>
       <Router className={"AppRouter"}>
-        <Redirect from="/" to="/hq" />
-        <RoomPage path="/:roomName?" />
+        <RoomPage path="/:roomName" />
       </Router>
     </StoresProvider>
   );
