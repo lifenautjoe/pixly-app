@@ -6,13 +6,27 @@ import { IRoomUpdateEventData } from "../core/interfaces/event-data/IRoomUpdateE
 import { IUserStatusUpdateEventData } from "../core/interfaces/event-data/UserUpdateEventData";
 import { IUserLeftRoomEventData } from "../core/interfaces/event-data/IUserLeftRoomEventData";
 import { PixlyClient } from "../lib/PixlyClient";
+import { computed, observable } from "mobx";
+import { IUserData } from "../core/interfaces/model-data/IUserData";
+import { IRoomData } from "../core/interfaces/model-data/IRoomData";
+import { IMessageData } from "../core/interfaces/model-data/IMessageData";
+import { ValidationError } from "class-validator";
 
 export class AppStore {
-  pixlyClient?: PixlyClient;
+  pixlyClient: PixlyClient;
 
-  constructor() {
+  @observable
+  user?: IUserData;
+
+  @observable
+  room?: IRoomData;
+
+  @observable
+  messages?: IMessageData[];
+
+  constructor({ pixlyEndpoint }: { pixlyEndpoint: string }) {
     this.pixlyClient = new PixlyClient({
-      endpoint: "http://localhost:9000",
+      endpoint: pixlyEndpoint,
       onAuthenticated: this.onPixlyAuthenticated,
       onJoinedRoom: this.onPixlyJoinedRoom,
       onNewMessage: this.onPixlyNewMessage,
@@ -22,19 +36,44 @@ export class AppStore {
     });
   }
 
+  @computed
+  get isAuthenticated(): boolean {
+    return typeof this.user !== "undefined";
+  }
+
   public startPixly(): void {
+    if (this.pixlyClient?.started) return;
     this.pixlyClient?.start();
   }
 
-  private onPixlyAuthenticated(socket: Socket, eventData: IAuthenticatedEventData) {}
+  public validateUserAuthenticationData(name: string, avatar: string): ValidationError[] {
+    return this.pixlyClient.validateAuthenticateActionDto({
+      name,
+      avatar,
+    });
+  }
 
-  private onPixlyJoinedRoom(socket: Socket, eventData: IJoinedRoomEventData) {}
+  private onPixlyAuthenticated(socket: Socket, eventData: IAuthenticatedEventData) {
+    console.log("🐵 User authenticated with data", eventData);
+  }
 
-  private onPixlyNewMessage(socket: Socket, eventData: INewMessageEventData) {}
+  private onPixlyJoinedRoom(socket: Socket, eventData: IJoinedRoomEventData) {
+    console.log("🏡 Joined room with data", eventData);
+  }
 
-  private onPixlyRoomStatusUpdate(socket: Socket, eventData: IRoomUpdateEventData) {}
+  private onPixlyNewMessage(socket: Socket, eventData: INewMessageEventData) {
+    console.log("💌 New message with data", eventData);
+  }
 
-  private onPixlyUserStatusUpdate(socket: Socket, eventData: IUserStatusUpdateEventData) {}
+  private onPixlyRoomStatusUpdate(socket: Socket, eventData: IRoomUpdateEventData) {
+    console.log("📍 Room status update with data", eventData);
+  }
 
-  private onPixlyUserLeftRoom(socket: Socket, eventData: IUserLeftRoomEventData) {}
+  private onPixlyUserStatusUpdate(socket: Socket, eventData: IUserStatusUpdateEventData) {
+    console.log("📍 User status update with data", eventData);
+  }
+
+  private onPixlyUserLeftRoom(socket: Socket, eventData: IUserLeftRoomEventData) {
+    console.log("👋 User left room with data", eventData);
+  }
 }
