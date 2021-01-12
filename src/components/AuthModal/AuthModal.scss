@@ -1,0 +1,38 @@
+.AuthModal {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &Form {
+    max-width: 570px;
+    padding: 2rem;
+
+    &Button {
+      padding-top: 1rem;
+    }
+
+    &Errors {
+      padding-top: 1rem;
+    }
+
+    &Avatars {
+      padding-top: 1rem;
+
+      &Options {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      }
+
+      &Option {
+        transform: scale(0.8);
+        padding: 0.5rem;
+      }
+    }
+  }
+}

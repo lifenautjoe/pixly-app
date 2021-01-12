@@ -1,0 +1,15 @@
+.AvatarPicker {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+
+  &Avatar {
+    transform: scale(0.8);
+    padding: 0.5rem;
+
+    &.is-dark {
+      margin: 0;
+    }
+  }
+}
