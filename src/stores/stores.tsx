@@ -1,5 +1,5 @@
 import React from "react";
-import { AppStore } from "./AppStore";
+import { PixlyStore } from "./PixlyStore";
 
 const pixlyEndpoint = process.env.REACT_APP_PIXLY_ENDPOINT;
 
@@ -8,8 +8,8 @@ if (!pixlyEndpoint) {
 }
 
 export const stores = Object.freeze({
-  appStore: new AppStore({
-    pixlyEndpoint: pixlyEndpoint,
+  pixlyStore: new PixlyStore({
+    endpoint: pixlyEndpoint,
   }),
 });
 
