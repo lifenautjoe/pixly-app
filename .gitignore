@@ -24,3 +24,4 @@ yarn-error.log*
 
 pixly-app-nodeenv
 /.eslintcache
+/.env
