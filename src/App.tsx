@@ -9,9 +9,9 @@ import { RoomPage } from "./pages/RoomPage/RoomPage";
 const App: FunctionComponent = () => {
   return (
     <StoresProvider value={stores}>
-      <Router>
+      <Router className={"AppRouter"}>
         <Redirect from="/" to="/hq" />
-        <RoomPage path="/:roomName?"></RoomPage>
+        <RoomPage path="/:roomName?" />
       </Router>
     </StoresProvider>
   );
