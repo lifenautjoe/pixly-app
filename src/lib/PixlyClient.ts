@@ -61,16 +61,16 @@ export class PixlyClient {
     this.socket?.emit(PixlyProtocol.actions.AUTHENTICATE, dto);
   }
 
-  public validateJoinRoomActionDto(rawData: Record<string, unknown>): ValidationError[] {
-    return this.validateData(rawData, JoinRoomActionDto);
+  public validateJoinRoomActionDto(dto: JoinRoomActionDto): ValidationError[] {
+    return this.validateData(dto, JoinRoomActionDto);
   }
 
   public emitJoinRoomAction(dto: JoinRoomActionDto): void {
     this.socket?.emit(PixlyProtocol.actions.JOIN_ROOM, dto);
   }
 
-  public validateSendMessageActionDto(rawData: Record<string, unknown>): ValidationError[] {
-    return this.validateData(rawData, SendMessageActionDto);
+  public validateSendMessageActionDto(dto: SendMessageActionDto): ValidationError[] {
+    return this.validateData(dto, SendMessageActionDto);
   }
 
   public emitSendMessageAction(dto: SendMessageActionDto): void {

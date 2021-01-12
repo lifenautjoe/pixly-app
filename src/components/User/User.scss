@@ -1,3 +1,8 @@
 .User {
   position: absolute;
+
+  &Message {
+    position: absolute;
+    transform: translateY(-100%);
+  }
 }

@@ -3,10 +3,12 @@
 
   &Boundary {
     height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   &Content {
-    height: 100%;
+    flex: 1;
     position: relative;
     display: flex;
     align-items: center;

@@ -17,13 +17,16 @@ import { IUserStatusData } from "../core/interfaces/model-data/IUserStatusData";
 import { IUserJoinedRoomEventData } from "../core/interfaces/event-data/IUserJoinedRoomEventData";
 
 export class PixlyStore {
+  static readonly MESSAGE_KEEPALIVE_IN_MS = 3000;
+
   client: PixlyClient;
 
   user?: IUserData;
 
   room?: IRoomData;
 
-  messages?: IMessageData[] = [];
+  // Please note any user may only have one message they own in this array.
+  messages: IMessageData[] = [];
 
   errorMessage = "";
 
@@ -62,20 +65,39 @@ export class PixlyStore {
     return typeof this.user !== "undefined";
   }
 
+  public getUserLatestMessage(user: IUserData): IMessageData | undefined {
+    return this.messages.find(message => message.user.socketId === user.socketId);
+  }
+
   public validateUserAuthenticationDto(dto: AuthenticateActionDto): ValidationError[] {
     return this.client.validateAuthenticateActionDto(dto);
   }
 
   public authenticate(dto: AuthenticateActionDto): void {
-    return this.client.emitAuthenticateAction(dto);
+    this.client.emitAuthenticateAction(dto);
   }
 
   public joinRoom(dto: JoinRoomActionDto): void {
-    return this.client.emitJoinRoomAction(dto);
+    this.client.emitJoinRoomAction(dto);
+  }
+
+  public validateSendMessageActionDto(dto: SendMessageActionDto): ValidationError[] {
+    return this.client.validateSendMessageActionDto(dto);
   }
 
   public sendMessage(dto: SendMessageActionDto): void {
-    return this.client.emitSendMessageAction(dto);
+    if (!this.user) return;
+    const message: IMessageData = {
+      user: this.user,
+      text: dto.text,
+    };
+
+    // Add it locally
+    this.onNewMessage({
+      message,
+    });
+
+    this.client.emitSendMessageAction(dto);
   }
 
   public updateStatus(dto: UpdateStatusActionDto): void {
@@ -95,7 +117,12 @@ export class PixlyStore {
 
   private onNewMessage = (eventData: INewMessageEventData) => {
     console.log("💌 New message with data", eventData);
-    this.addNewMessage(eventData.message);
+
+    const message = eventData.message;
+    this.addNewMessage(message);
+    setTimeout(() => {
+      this.removeMessageByReference(message);
+    }, PixlyStore.MESSAGE_KEEPALIVE_IN_MS);
   };
 
   private onUserStatusUpdate = (eventData: IUserStatusUpdateEventData) => {
@@ -142,7 +169,12 @@ export class PixlyStore {
   }
 
   private addNewMessage(message: IMessageData) {
-    this.messages?.push(message);
+    this.messages?.unshift(message);
+  }
+
+  private removeMessageByReference(message: IMessageData) {
+    const indexOfMessage = this.messages.indexOf(message);
+    this.messages.splice(indexOfMessage, 1);
   }
 
   private updateUserInRoom(user: IUserData) {

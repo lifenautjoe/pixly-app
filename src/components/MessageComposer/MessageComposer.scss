@@ -1,0 +1,10 @@
+.MessageComposer {
+  display: flex;
+
+  &Button {
+    padding-left: 2rem;
+    button {
+      height: 92%;
+    }
+  }
+}
