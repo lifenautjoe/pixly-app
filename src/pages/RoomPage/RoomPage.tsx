@@ -4,20 +4,27 @@ import "./RoomPage.scss";
 import { useStore } from "../../hooks/stores";
 import { observer } from "mobx-react-lite"; // Or "mobx-react".
 import { Room } from "../../components/Room/Room";
-import { AuthModal } from "../../components/AuthModal/AuthModal";
+import { AuthSplash } from "../../components/AuthSplash/AuthSplash";
 import React from "react";
+import { ConnectSplash } from "../../components/ConnectSplash/ConnectSplash";
+import { FatalErrorSplash } from "../../components/FatalErrorSplash/FatalErrorSplash";
 interface IRoomPageProps extends RouteComponentProps {
   roomName?: string;
 }
 
-export const RoomPage: FunctionComponent<IRoomPageProps> = observer(props => {
-  const appStore = useStore("appStore");
+export const RoomPage: FunctionComponent<IRoomPageProps> = observer(({ roomName }: IRoomPageProps) => {
+  const pixlyStore = useStore("pixlyStore");
 
-  let roomName = props.roomName;
+  // Validate room name
+  if (!roomName) return null;
 
-  if (!roomName) {
-    roomName = "hq";
+  if (pixlyStore.fatalErrorMessage) {
+    return <FatalErrorSplash errorMessage={pixlyStore.fatalErrorMessage} />;
   }
 
-  return appStore.isAuthenticated ? <Room roomName={roomName} /> : <AuthModal roomName={roomName} />;
+  if (!pixlyStore.connected) {
+    return <ConnectSplash />;
+  }
+
+  return pixlyStore.isAuthenticated ? <Room name={roomName} /> : <AuthSplash roomName={roomName} />;
 });
