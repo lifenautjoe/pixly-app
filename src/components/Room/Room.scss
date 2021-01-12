@@ -1,0 +1,19 @@
+.Room {
+  padding: 2rem;
+
+  &Boundary {
+    height: 100%;
+  }
+
+  &Content {
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &ZeroPoint {
+      position: relative;
+    }
+  }
+}
