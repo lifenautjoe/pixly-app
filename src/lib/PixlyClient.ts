@@ -1,9 +1,9 @@
+import { IUserJoinedRoomEventData } from "./../core/interfaces/event-data/IUserJoinedRoomEventData";
 import { io, Socket } from "socket.io-client";
 import { PixlyProtocol } from "../core/protocol";
 import { IAuthenticatedEventData } from "../core/interfaces/event-data/IAuthenticatedEventData";
 import { IJoinedRoomEventData } from "../core/interfaces/event-data/IJoinedRoomEventData";
 import { INewMessageEventData } from "../core/interfaces/event-data/INewMessageEventData";
-import { IRoomUpdateEventData } from "../core/interfaces/event-data/IRoomUpdateEventData";
 import { IUserStatusUpdateEventData } from "../core/interfaces/event-data/UserUpdateEventData";
 import { IUserLeftRoomEventData } from "../core/interfaces/event-data/IUserLeftRoomEventData";
 import { AuthenticateActionDto } from "../core/dtos/AuthenticateActionDto";
@@ -15,13 +15,13 @@ import { validateSync, ValidationError } from "class-validator";
 
 interface PixlyClientConfig {
   endpoint: string;
-  onConnected?: (socket: Socket) => void;
-  onAuthenticated: (socket: Socket, eventData: IAuthenticatedEventData) => void;
-  onJoinedRoom: (socket: Socket, eventData: IJoinedRoomEventData) => void;
-  onNewMessage: (socket: Socket, eventData: INewMessageEventData) => void;
-  onRoomStatusUpdate: (socket: Socket, eventData: IRoomUpdateEventData) => void;
-  onUserStatusUpdate: (socket: Socket, eventData: IUserStatusUpdateEventData) => void;
-  onUserLeftRoom: (socket: Socket, eventData: IUserLeftRoomEventData) => void;
+  onConnected?: () => void;
+  onAuthenticated: (eventData: IAuthenticatedEventData) => void;
+  onJoinedRoom: (eventData: IJoinedRoomEventData) => void;
+  onNewMessage: (eventData: INewMessageEventData) => void;
+  onUserStatusUpdate: (eventData: IUserStatusUpdateEventData) => void;
+  onUserLeftRoom: (eventData: IUserLeftRoomEventData) => void;
+  onUserJoinedRoom: (eventData: IUserJoinedRoomEventData) => void;
   onDisconnected?: () => void;
   onError?: (error: Error) => void;
 }
@@ -38,7 +38,7 @@ export class PixlyClient {
       throw new Error("PixlyClient is already started");
     }
 
-    this.socket = io(this.config.endpoint);
+    this.socket = io(this.config.endpoint, { secure: false, reconnection: false, rejectUnauthorized: false });
     this.socket.on("connect", this.onSocketConnect);
 
     if (this.config.onError) {
@@ -53,8 +53,8 @@ export class PixlyClient {
     this.started = true;
   }
 
-  public validateAuthenticateActionDto(rawData: Record<string, unknown>): ValidationError[] {
-    return this.validateData(rawData, AuthenticateActionDto);
+  public validateAuthenticateActionDto(dto: AuthenticateActionDto): ValidationError[] {
+    return this.validateData(dto, AuthenticateActionDto);
   }
 
   public emitAuthenticateAction(dto: AuthenticateActionDto): void {
@@ -85,28 +85,30 @@ export class PixlyClient {
     this.socket?.emit(PixlyProtocol.actions.UPDATE_STATUS, dto);
   }
 
-  private onSocketConnect(socket: Socket) {
+  private onSocketConnect = () => {
     if (this.config.onConnected) {
-      this.config.onConnected(socket);
+      this.config.onConnected();
     }
-    this.installEvents(socket);
+    this.installEvents();
+  };
+
+  private installEvents() {
+    if (this.socket) {
+      this.socket.on(PixlyProtocol.events.AUTHENTICATED, this.config.onAuthenticated);
+
+      this.socket.on(PixlyProtocol.events.JOINED_ROOM, this.config.onJoinedRoom);
+
+      this.socket.on(PixlyProtocol.events.NEW_MESSAGE, this.config.onNewMessage);
+
+      this.socket.on(PixlyProtocol.events.USER_STATUS_UPDATE, this.config.onUserStatusUpdate);
+
+      this.socket.on(PixlyProtocol.events.USER_LEFT_ROOM, this.config.onUserLeftRoom);
+
+      this.socket.on(PixlyProtocol.events.USER_JOINED_ROOM, this.config.onUserJoinedRoom);
+    }
   }
 
-  private installEvents(socket: Socket) {
-    socket.on(PixlyProtocol.events.AUTHENTICATED, this.config.onAuthenticated);
-
-    socket.on(PixlyProtocol.events.JOINED_ROOM, this.config.onJoinedRoom);
-
-    socket.on(PixlyProtocol.events.NEW_MESSAGE, this.config.onNewMessage);
-
-    socket.on(PixlyProtocol.events.ROOM_STATUS_UPDATE, this.config.onRoomStatusUpdate);
-
-    socket.on(PixlyProtocol.events.USER_STATUS_UPDATE, this.config.onUserStatusUpdate);
-
-    socket.on(PixlyProtocol.events.USER_LEFT_ROOM, this.config.onUserLeftRoom);
-  }
-
-  private validateData<DtoClass>(rawData: Record<string, unknown>, dto: any): ValidationError[] {
+  private validateData<DtoClass>(rawData: any, dto: any): ValidationError[] {
     const data = (plainToClass(dto, rawData) as unknown) as DtoClass;
     return validateSync(data);
   }
