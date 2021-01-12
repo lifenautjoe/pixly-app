@@ -1,0 +1,10 @@
+.ConnectSplash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &Message {
+    max-width: 570px;
+    padding: 2rem;
+  }
+}
