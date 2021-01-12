@@ -39,11 +39,6 @@ export const AuthSplash: FunctionComponent<AuthSplashProps> = ({ roomName }: Aut
   return (
     <div
       className={"AuthSplash"}
-      style={
-        {
-          //backgroundImage: `url(${Background})`,
-        }
-      }
     >
       <form className="AuthSplashForm" onSubmit={handleSubmit}>
         <div className="nes-container with-title is-centered">
