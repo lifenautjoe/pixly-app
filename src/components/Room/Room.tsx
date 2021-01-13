@@ -13,8 +13,9 @@ interface IRoomProps extends RouteComponentProps {
 
 export const Room: FunctionComponent<IRoomProps> = observer(({ name }: IRoomProps) => {
   const pixlyStore = useStore("pixlyStore");
-  const roomContentRef = useRef(null);
-  const zeroPointRef = useRef<HTMLDivElement>(null);
+  const roomContentElRef = useRef(null);
+  const zeroPointElRef = useRef<HTMLDivElement>(null);
+  const authenticatedUserElRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     pixlyStore.joinRoom({
@@ -23,7 +24,7 @@ export const Room: FunctionComponent<IRoomProps> = observer(({ name }: IRoomProp
   }, []);
 
   const onRoomClick = ({ clientX, clientY }: React.MouseEvent<HTMLElement>) => {
-    const zeroPointBoundingRect = zeroPointRef.current?.getBoundingClientRect();
+    const zeroPointBoundingRect = zeroPointElRef.current?.getBoundingClientRect();
     if (zeroPointBoundingRect) {
       const zeroPointXDistance = clientX - zeroPointBoundingRect?.x;
       const zeroPointYDistance = (clientY - zeroPointBoundingRect?.y) * -1;
@@ -41,8 +42,8 @@ export const Room: FunctionComponent<IRoomProps> = observer(({ name }: IRoomProp
         <p className="title">{name} room</p>
         {pixlyStore.room ? (
           <>
-            <div className="RoomContent" ref={roomContentRef} onClick={onRoomClick}>
-              <div className="RoomContentZeroPoint" ref={zeroPointRef}>
+            <div className="RoomContent" ref={roomContentElRef} onClick={onRoomClick}>
+              <div className="RoomContentZeroPoint" ref={zeroPointElRef}>
                 {Object.entries(pixlyStore.room.users).map(([userSocketId, user]) => {
                   const positioningStyles: CSSProperties = {
                     left: user.status?.x || 0 * -1 || 0,
@@ -51,8 +52,16 @@ export const Room: FunctionComponent<IRoomProps> = observer(({ name }: IRoomProp
                   };
 
                   return (
-                    <div key={userSocketId} style={positioningStyles}>
-                      <User user={user} style={{ transform: `translateX(-50%) translateY(-50%)` }} />
+                    <div
+                      key={`${userSocketId}${pixlyStore.user?.status?.x}${pixlyStore.user?.status?.y}`}
+                      style={positioningStyles}
+                      ref={userSocketId === pixlyStore.user?.socketId ? authenticatedUserElRef : undefined}
+                    >
+                      <User
+                        user={user}
+                        style={{ transform: `translateX(-50%) translateY(-50%)` }}
+                        authenticatedUserElRef={authenticatedUserElRef.current}
+                      />
                     </div>
                   );
                 })}
