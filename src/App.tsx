@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { Redirect, Router } from "@reach/router";
+import { Router } from "@reach/router";
 import "nes.css/css/nes.min.css";
 
 import "./App.scss";

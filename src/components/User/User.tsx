@@ -1,4 +1,4 @@
-import React, { CSSProperties, FunctionComponent, useEffect, useRef, useState } from "react";
+import React, { CSSProperties, FunctionComponent, useRef, useState } from "react";
 import { IUserData } from "../../core/interfaces/model-data/IUserData";
 import "./User.scss";
 import { Avatar } from "../Avatar";
@@ -23,7 +23,7 @@ interface IUserProps {
 export const User: FunctionComponent<IUserProps> = observer(({ user, style, authenticatedUserElRef }: IUserProps) => {
   const pixlyStore = useStore("pixlyStore");
   const userElementRef = useRef<HTMLDivElement>(null);
-  const [windowDimensions, _] = useState(getWindowDimensions());
+  const [windowDimensions] = useState(getWindowDimensions());
 
   const userLatestMessage = pixlyStore.getUserLatestMessage(user);
 
@@ -33,7 +33,7 @@ export const User: FunctionComponent<IUserProps> = observer(({ user, style, auth
   if (isNotAuthenticatedUser) {
     // These changes only apply to other users, not ours
     const userElementBoundingRect = userElementRef.current?.getBoundingClientRect();
-    const authenticatedUserElementBoundingRect = authenticatedUserElRef!.firstElementChild?.getBoundingClientRect();
+    const authenticatedUserElementBoundingRect = authenticatedUserElRef?.firstElementChild?.getBoundingClientRect();
 
     if (userElementBoundingRect && authenticatedUserElementBoundingRect) {
       const xDistance = Math.abs(authenticatedUserElementBoundingRect.x - userElementBoundingRect.x);

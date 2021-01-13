@@ -3,7 +3,7 @@ import { SendMessageActionDto } from "../../core/dtos/SendMessageActionDto";
 import { useStore } from "../../hooks/stores";
 import "./MessageComposer.scss";
 
-export const MessageComposer: FunctionComponent = props => {
+export const MessageComposer: FunctionComponent = () => {
   const [text, setText] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const pixlyStore = useStore("pixlyStore");
