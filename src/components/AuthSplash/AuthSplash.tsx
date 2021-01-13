@@ -37,16 +37,14 @@ export const AuthSplash: FunctionComponent<AuthSplashProps> = ({ roomName }: Aut
   };
 
   return (
-    <div
-      className={"AuthSplash"}
-    >
+    <div className={"AuthSplash"}>
       <form className="AuthSplashForm" onSubmit={handleSubmit}>
         <div className="nes-container with-title is-centered">
           <p className="title">Welcome to Pixly!</p>
           <p>{`So you'd like to join room ${roomName} huh?`}</p>
           <div className="nes-field">
             <label htmlFor="name_field">{"What's your name?"}</label>
-            <input type="text" id="name_field" className="nes-input" value={name} onChange={e => setName(e.target.value)}></input>
+            <input autoComplete="off" type="text" id="name_field" className="nes-input" value={name} onChange={e => setName(e.target.value)}></input>
           </div>
           <div className="AuthSplashFormAvatars">
             <span className="nes-text">{"Pick an avatar"}</span>

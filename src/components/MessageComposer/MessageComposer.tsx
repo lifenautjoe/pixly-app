@@ -36,7 +36,14 @@ export const MessageComposer: FunctionComponent = () => {
         New message
       </label>
       <div className="MessageComposer">
-        <input type="text" id="message_field" className="nes-textarea" value={text} onChange={e => setText(e.target.value)}></input>
+        <input
+          autoComplete="off"
+          type="text"
+          id="message_field"
+          className="nes-textarea"
+          value={text}
+          onChange={e => setText(e.target.value)}
+        ></input>
         <div className="MessageComposerButton">
           <button type="submit" className="nes-btn is-primary">
             Send
