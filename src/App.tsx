@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { Router } from "@reach/router";
+import { Redirect, Router } from "@reach/router";
 import "nes.css/css/nes.min.css";
 
 import "./App.scss";
@@ -11,6 +11,7 @@ const App: FunctionComponent = () => {
     <StoresProvider value={stores}>
       <Router className={"AppRouter"}>
         <RoomPage path="/:roomName" />
+        <Redirect default noThrow from="/" to="/hq" />
       </Router>
     </StoresProvider>
   );
